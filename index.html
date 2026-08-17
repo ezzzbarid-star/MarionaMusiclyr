@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mariona Music LY</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body, html { width: 100%; height: 100%; overflow: hidden; background-color: #030114; }
+
+    /* 1. BRANDING TITLE (KIRI ATAS) */
+    .brand-title {
+      position: absolute;
+      top: 25px;
+      left: 25px;
+      z-index: 10;
+      font-size: 22px;
+      font-weight: 800;
+      color: #00f3ff;
+      letter-spacing: 1px;
+      text-shadow: 0 0 10px rgba(0, 243, 255, 0.8), 0 0 20px rgba(255, 0, 255, 0.6);
+      pointer-events: none;
+    }
+
+    /* 2. BACKGROUND JALAN SYNTHWAVE (BERGERAK) */
+    .synthwave-stage {
+      position: absolute;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 35%, #5d0f62 0%, #15052b 60%, #030114 100%);
+    }
+
+    /* Matahari Retro Background */
+    .retro-sun {
+      position: absolute;
+      top: 35%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: linear-gradient(to bottom, #ff71ce, #ff2a85, #ffb800);
+      box-shadow: 0 0 50px #ff2a85;
+      z-index: 1;
+    }
+
+    /* Grid Jalanan Perspektif */
+    .road-perspective {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 50vh;
+      perspective: 300px;
+      overflow: hidden;
+      z-index: 2;
+    }
+
+    .road-grid {
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      left: -50%;
+      bottom: 0;
+      background-image: 
+        linear-gradient(to right, rgba(0, 243, 255, 0.5) 2px, transparent 2px),
+        linear-gradient(to bottom, rgba(0, 243, 255, 0.5) 2px, transparent 2px);
+      background-size: 60px 40px;
+      transform: rotateX(75deg);
+      transform-origin: 50% 100%;
+    }
+
+    /* Animasi Jalan Bergerak Maju */
+    .moving-road .road-grid {
+      animation: drive 0.6s linear infinite;
+    }
+
+    @keyframes drive {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 40px; }
+    }
+
+    /* 3. TURNTABLE & PIRINGAN HITAM (TENGAH) */
+    .player-container {
+      position: absolute;
+      top: 55%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Deck Turntable Retro Pop-Art */
+    .turntable-deck {
+      position: relative;
+      width: 290px;
+      height: 250px;
+      background: #e6e6e6;
+      border: 5px solid #111;
+      border-radius: 16px;
+      box-shadow: 0 12px 0 #000, 0 20px 30px rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.1s ease;
+    }
+
+    /* Visual Efek Rays (Gaya Pop-Art Pas Play/Dipencet) */
+    .pop-rays {
+      position: absolute;
+      width: 380px;
+      height: 380px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+      background: radial-gradient(circle, rgba(255,0,127,0.4) 0%, transparent 70%);
+      z-index: 4;
+    }
+
+    .active-rays {
+      opacity: 1;
+    }
+
+    /* Piringan Hitam (Vinyl) */
+    .vinyl-disc {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ff2a85 18%, #111 19%, #222 35%, #111 36%, #1a1a1a 65%, #000 100%);
+      border: 3px solid #333;
+      box-shadow: 0 0 15px rgba(0,0,0,0.6);
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .vinyl-disc::after {
+      content: '';
+      width: 20px;
+      height: 20px;
+      background: #e6e6e6;
+      border-radius: 50%;
+      border: 2px solid #111;
+    }
+
+    /* Jarum Pemutar (Tone Arm) */
+    .tonearm {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      width: 65px;
+      height: 95px;
+      border-right: 4px solid #333;
+      border-bottom: 4px solid #333;
+      transform-origin: top right;
+      transform: rotate(-20deg);
+      transition: transform 0.4s ease;
+      pointer-events: none;
+    }
+
+    .playing .tonearm {
+      transform: rotate(10deg);
+    }
+
+    /* Animasi Putar Vinyl */
+    .spinning {
+      animation: spinVinyl 2.5s linear infinite;
+    }
+
+    @keyframes spinVinyl {
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Efek Shaking Pas Dipencet */
+    .shaking {
+      animation: shakeDeck 0.25s ease-in-out infinite;
+    }
+
+    @keyframes shakeDeck {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(-5px, 4px) rotate(-2deg); }
+      50% { transform: translate(5px, -4px) rotate(2deg); }
+      75% { transform: translate(-4px, -3px) rotate(-1deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+
+    /* 4. KONTROL AUDIO */
+    .controls-wrapper {
+      margin-top: 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .track-name {
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      text-shadow: 0 0 8px #ff71ce;
+      max-width: 260px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+    }
+
+    .action-btn {
+      background: linear-gradient(135deg, #ff007f, #7928ca);
+      color: #fff;
+      border: none;
+      padding: 10px 22px;
+      font-weight: bold;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
+    }
+
+    .action-btn:active {
+      transform: scale(0.95);
+    }
+
+    audio {
+      margin-top: 5px;
+      height: 32px;
+      filter: invert(100%) hue-rotate(180deg);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Judul Kiri Atas -->
+  <div class="brand-title">Mariona Music LY</div>
+
+  <!-- Background Jalan Synthwave -->
+  <div class="synthwave-stage" id="stage">
+    <div class="retro-sun"></div>
+    <div class="road-perspective">
+      <div class="road-grid"></div>
+    </div>
+  </div>
+
+  <!-- Turntable & Piringan Hitam -->
+  <div class="player-container">
+    <div class="pop-rays" id="rays"></div>
+    
+    <div class="turntable-deck" id="deck" onclick="handleDeckClick()">
+      <div class="vinyl-disc" id="vinyl"></div>
+      <div class="tonearm"></div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls-wrapper">
+      <div class="track-name" id="track-name">Pencet Piringan Hitam / Pilih Musik</div>
+      <button class="action-btn" onclick="document.getElementById('audio-file').click()">Buka File MP3</button>
+      <input type="file" id="audio-file" accept="audio/*" style="display: none;">
+      <audio id="audio-player" controls></audio>
+    </div>
+  </div>
+
+  <script>
+    const stage = document.getElementById('stage');
+    const deck = document.getElementById('deck');
+    const vinyl = document.getElementById('vinyl');
+    const rays = document.getElementById('rays');
+    const playerContainer = document.querySelector('.player-container');
+    const audioPlayer = document.getElementById('audio-player');
+    const audioInput = document.getElementById('audio-file');
+    const trackName = document.getElementById('track-name');
+
+    // Buka Musik dari File
+    audioInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        audioPlayer.src = URL.createObjectURL(file);
+        trackName.innerText = file.name.replace(/\.[^/.]+$/, "");
+        audioPlayer.play();
+      }
+    });
+
+    // Saat Lagu Diputar (Play)
+    audioPlayer.addEventListener('play', () => {
+      stage.classList.add('moving-road');
+      vinyl.classList.add('spinning');
+      playerContainer.classList.add('playing');
+      rays.classList.add('active-rays');
+    });
+
+    // Saat Lagu Di-pause
+    audioPlayer.addEventListener('pause', () => {
+      stage.classList.remove('moving-road');
+      vinyl.classList.remove('spinning');
+      playerContainer.classList.remove('playing');
+      rays.classList.remove('active-rays');
+    });
+
+    // Interaksi Klik/Pencet Piringan Hitam
+    function handleDeckClick() {
+      // Efek Shaking/Vibrasi
+      deck.classList.add('shaking');
+      setTimeout(() => {
+        deck.classList.remove('shaking');
+      }, 250);
+
+      // Play/Pause lagu
+      if (audioPlayer.src) {
+        if (audioPlayer.paused) {
+          audioPlayer.play();
+        } else {
+          audioPlayer.pause();
+        }
+      } else {
+        audioInput.click();
+      }
+    }
+  </script>
+</body>
+  </html>
+  
